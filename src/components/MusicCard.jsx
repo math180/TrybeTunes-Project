@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Loading from './Loading';
-import { addSong } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 class MusicCard extends React.Component {
   constructor() {
@@ -12,10 +12,25 @@ class MusicCard extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.requestFavorite();
+  }
+
+  // função para acessar o objeto
   requestFunc = async () => {
     this.setState({ loading: true });
-    await addSong();
+    const { save } = this.props;
+    await addSong(save);
     this.setState({ loading: false, isChecked: true });
+  };
+
+  // função para salvar no localStorage
+  requestFavorite = async () => {
+    const resp = await getFavoriteSongs();
+    const { save } = this.props;
+    if (resp.some((song) => song.trackId === save.trackId)) {
+      this.setState({ isChecked: true });
+    }
   };
 
   render() {
@@ -38,7 +53,7 @@ class MusicCard extends React.Component {
               name="check"
               id="check"
               data-testid={ `checkbox-music-${trackId}` }
-              defaultChecked={ isChecked }
+              checked={ isChecked }
               onClick={ this.requestFunc }
             />
           </label>
@@ -51,6 +66,7 @@ MusicCard.propTypes = {
   previewUrl: PropTypes.string.isRequired,
   trackName: PropTypes.string.isRequired,
   trackId: PropTypes.number.isRequired,
+  save: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default MusicCard;
