@@ -39,54 +39,53 @@ class Search extends React.Component {
     const { isDisabled, text, loading, data, showList, artist } = this.state;
     if (loading) return <Loading />;
     return (
-        <div data-testid="page-search">
-          <Header />
-          
-          <label htmlFor="name">
-            <input
-              type="text"
-              name="text"
-              id="name"
-              data-testid="search-artist-input"
-              placeholder="Artists, songs, or albums"
-              onChange={ this.handleChange }
-              value={ text }
-            />
-          </label>
-          <button
-            data-testid="search-artist-button"
-            type="button"
-            disabled={ isDisabled }
-            onClick={ this.handleClick }
-          >
-            Pesquisar
-          </button>
+      <div data-testid="page-search">
+        <Header />
+        <label htmlFor="name">
+          <input
+            type="text"
+            name="text"
+            id="name"
+            data-testid="search-artist-input"
+            placeholder="Artists"
+            onChange={ this.handleChange }
+            value={ text }
+            autoComplete="off"
+          />
+        </label>
+        <button
+          data-testid="search-artist-button"
+          type="button"
+          disabled={ isDisabled }
+          onClick={ this.handleClick }
+        >
+          Pesquisar
+        </button>
 
+        { showList && (
+          <h2>
+            {`Resultado de álbuns de: ${artist}`}
+          </h2>
+        ) }
 
-          { showList && (
-            <h2>
-              {`Resultado de álbuns de: ${artist}`}
-            </h2>
-          ) }
-
-          {
-            data.length === 0 ? <h5>Nenhum álbum foi encontrado</h5> : (
-                data.map((song) => (
-                  <div key={ song.collectionId }>
-                    <img src={ song.artworkUrl100 } alt={ song.collectionName } />
-                    <h4>{ song.collectionName }</h4>
-                    <h4>{ song.artistName }</h4>
-                    <Link
-                      to={ `/album/${song.collectionId}` }
-                      data-testid={ `link-to-album-${song.collectionId}` }
-                    >
-                      Ver álbum
-                    </Link>
-                  </div>
-                ))
-              )
-          }
-        </div>
+        {
+          data.length === 0 ? <h5>Nenhum álbum foi encontrado</h5> : (
+            data.map((song) => (
+              <div key={ song.collectionId }>
+                <img src={ song.artworkUrl100 } alt={ song.collectionName } />
+                <h4>{ song.collectionName }</h4>
+                <h4>{ song.artistName }</h4>
+                <Link
+                  to={ `/album/${song.collectionId}` }
+                  data-testid={ `link-to-album-${song.collectionId}` }
+                >
+                  Ver álbum
+                </Link>
+              </div>
+            ))
+          )
+        }
+      </div>
     );
   }
 }
