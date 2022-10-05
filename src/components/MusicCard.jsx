@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Loading from './Loading';
-import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
 
 class MusicCard extends React.Component {
   constructor() {
@@ -18,10 +18,16 @@ class MusicCard extends React.Component {
 
   // função para acessar o objeto
   requestFunc = async () => {
+    const { isChecked } = this.state;
     this.setState({ loading: true });
     const { save } = this.props;
-    await addSong(save);
-    this.setState({ loading: false, isChecked: true });
+    if (isChecked) {
+      await removeSong(save);
+      this.setState({ isChecked: false, loading: false });
+    } else {
+      await addSong(save);
+      this.setState({ loading: false, isChecked: true });
+    }
   };
 
   // função para salvar no localStorage
