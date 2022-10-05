@@ -32,17 +32,16 @@ class Search extends React.Component {
     const { text } = this.state;
     this.setState({ loading: true });
     const list = await searchAlbumsAPI(text);
-    this.setState({ loading: false, text: '', data: list, showList: true });
+    this.setState({ loading: false, text: '', data: list, showList: true, artist: text });
   };
 
   render() {
     const { isDisabled, text, loading, data, showList, artist } = this.state;
     if (loading) return <Loading />;
     return (
-      <>
         <div data-testid="page-search">
           <Header />
-          <h1>Search</h1>
+          
           <label htmlFor="name">
             <input
               type="text"
@@ -62,28 +61,32 @@ class Search extends React.Component {
           >
             Pesquisar
           </button>
+
+
+          { showList && (
+            <h2>
+              {`Resultado de álbuns de: ${artist}`}
+            </h2>
+          ) }
+
+          {
+            data.length === 0 ? <h5>Nenhum álbum foi encontrado</h5> : (
+                data.map((song) => (
+                  <div key={ song.collectionId }>
+                    <img src={ song.artworkUrl100 } alt={ song.collectionName } />
+                    <h4>{ song.collectionName }</h4>
+                    <h4>{ song.artistName }</h4>
+                    <Link
+                      to={ `/album/${song.collectionId}` }
+                      data-testid={ `link-to-album-${song.collectionId}` }
+                    >
+                      Ver álbum
+                    </Link>
+                  </div>
+                ))
+              )
+          }
         </div>
-        { showList && (
-          <h2>
-            {`Resultado de álbum de: ${artist}`}
-          </h2>
-        ) }
-        { data.length === 0 ? <p>Nenhum álbum foi encontrado</p> : (
-          data.map((song) => (
-            <div key={ song.collectionName }>
-              <img src={ song.artworkUrl100 } alt={ song.collectionName } />
-              <p>{ song.collectionName }</p>
-              <p>{ song.artistName }</p>
-              <Link
-                to={ `/album/${song.collectionId}` }
-                data-testid={ `link-to-album-${collectionId}` }
-              >
-                Ver álbum
-              </Link>
-            </div>
-          ))
-        )}
-      </>
     );
   }
 }
