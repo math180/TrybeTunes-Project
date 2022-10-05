@@ -38,6 +38,7 @@ class Login extends React.Component {
             type="text"
             name="user"
             id="name"
+            autoComplete="off"
             value={ user }
             onChange={ this.handleChange }
           />
